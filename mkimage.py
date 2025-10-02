@@ -253,8 +253,10 @@ def makeimg(size, fs, img_name, backend):
         "Attaching image file " + img_name + ".img to loop device " + next_loop()
     )
     ldev = next_loop()
+    subprocess.run(["bash", "./nspawn-lo-setup.sh", "create_loop_devices"])
     subprocess.run(["losetup", "-P", ldev, work_dir + "/" + img_name + ".img"])
-
+    subprocess.run(["bash", "./nspawn-lo-setup.sh", "dolosetup", ldev, work_dir + "/" + img_name + ".img"])
+    
     logging.info("Image file created")
     if args.ci:
         subprocess.run(["ln", "-s", ldev, ldev.replace("/dev/", "/dev/mapper/")])
